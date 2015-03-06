@@ -1,12 +1,36 @@
 #/bin/bash
 
+# Script to make m3u play list
+#
+# Usage mk_m3u list_file
+#
+# Output m3u file contains file names in the directory specified in list_file.
+# If a file name is specified instead of directory,
+# the file name is output to m3u file.
+#
+# About "-" and "+" in list_file, see Excluding status below
+
+# Only file that has following extension are recognized as a music file.
+types=("wma" "mp3")
+
 IFS=$'\n'
 
+# Excluding status
+# When "-" line appears, set to 1.
+# When "+" line appears, reset to 0.
+# If this is 1, folloing lines are added to excludes array.
 excluding=0
+
+# Array to hold exclude list.
+# Lines that equal to one of entries in this array
+# are not included in m3u file.
 excludes=()
 
+excluded=0
+included=0
+
 type_filter() {
-  for type in wma mp3
+  for type in ${types[@]}
   do
     if [[ "$1" == *.${type} ]]
     then
@@ -35,6 +59,7 @@ make_filter() {
       if [ ${excluding} == 1 ]
       then
         excludes+=("$1")
+        excluded=$(($excluded+1))
       else
         return 0
       fi;;
@@ -42,8 +67,13 @@ make_filter() {
   return 1
 }
 
-out=${1%.*}.m3u8
-rm -f ${out}
+out() {
+  echo $1 >> ${out_file}
+  included=$(($included+1))
+}
+
+out_file=${1%.*}.m3u8
+rm -f ${out_file}
 while read dir
 do
   if [ -n "${dir}" ] && make_filter "${dir}"
@@ -55,13 +85,14 @@ do
         path=${dir}/${file}
         if type_filter "${file}" && file_filter "${path}"
         then
-          echo ${path} >> ${out}
+          out ${path}
         fi
       done
     else
-      echo ${dir} >> ${out}
+      out ${dir}
     fi
   fi
 done < $1
 
-ls -l ${out}
+echo "out $included line(s), excluded $excluded line(s)"
+ls -l ${out_file}
