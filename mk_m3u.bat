@@ -54,7 +54,7 @@ file_filter() {
 }
 
 # Makes excludes array to be used by file_filter
-# Adds file(s) following "-" line to excludes array
+# Adds line(s) between "-" line and "+" line to excludes array
 make_filter() {
   case "$1" in
     -* ) excluding=1;;
@@ -76,20 +76,21 @@ out() {
 
 out_file=${1%.*}.m3u8
 rm -f ${out_file}
-while read dir; do
-  if [ -n "${dir}" ] && make_filter "${dir}"; then
-    if [ -d "${dir}" ]; then
-      for file in `ls -1 "${dir}"`; do
-        path=${dir}/${file}
+while read line; do
+  if [ -n "${line}" ] && make_filter "${line}"; then
+    if [ -d "${line}" ]; then
+      for file in `ls -1 "${line}"`; do
+        path=${line}/${file}
         if type_filter "${file}" && file_filter "${path}"; then
           out ${path}
         fi
       done
     else
-      out ${dir}
+      out ${line}
     fi
   fi
 done < $1
 
+# shows summay and output file information
 echo "out $included line(s), excluded $excluded line(s)"
 ls -l ${out_file}
