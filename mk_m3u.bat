@@ -4,7 +4,7 @@
 #
 # Usage mk_m3u list_file
 #
-# Output m3u file contains file names in the directory specified in list_file.
+# Makes m3u file contains file names in the directory specified in list_file.
 # If a file name is specified instead of directory,
 # the file name is output to m3u file.
 #
@@ -18,7 +18,7 @@ IFS=$'\n'
 # Excluding status
 # When "-" line appears, set to 1.
 # When "+" line appears, reset to 0.
-# If this is 1, folloing lines are added to excludes array.
+# If this is 1, following lines are added to excludes array.
 excluding=0
 
 # Array to hold exclude list.
@@ -26,9 +26,12 @@ excluding=0
 # are not included in m3u file.
 excludes=()
 
+# Count of excluded/included lines
 excluded=0
 included=0
 
+# Filters file by extension
+# If extension of $1 is equal to one of entries in types array, returns 0
 type_filter() {
   for type in ${types[@]}
   do
@@ -40,17 +43,22 @@ type_filter() {
   return 1
 }
 
+# Filters file by excludes array
+# If $1 is NOT equal to all entries in exclues array, returns 0
 file_filter() {
   for exclude in ${excludes[@]}
   do
     if [[ "$1" == "${exclude}" ]]
     then
+      excluded=$(($excluded+1))
       return 1
     fi
   done
   return 0
 }
 
+# Makes excludes array to be used by file_filter
+# Adds file(s) following "-" line to excludes array
 make_filter() {
   case "$1" in
     -* ) excluding=1;;
@@ -59,7 +67,6 @@ make_filter() {
       if [ ${excluding} == 1 ]
       then
         excludes+=("$1")
-        excluded=$(($excluded+1))
       else
         return 0
       fi;;
