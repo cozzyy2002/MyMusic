@@ -33,10 +33,8 @@ included=0
 # Filters file by extension
 # If extension of $1 is equal to one of entries in types array, returns 0
 type_filter() {
-  for type in ${types[@]}
-  do
-    if [[ "$1" == *.${type} ]]
-    then
+  for type in ${types[@]}; do
+    if [[ "$1" == *.${type} ]]; then
       return 0
     fi
   done
@@ -46,10 +44,8 @@ type_filter() {
 # Filters file by excludes array
 # If $1 is NOT equal to all entries in exclues array, returns 0
 file_filter() {
-  for exclude in ${excludes[@]}
-  do
-    if [[ "$1" == "${exclude}" ]]
-    then
+  for exclude in ${excludes[@]}; do
+    if [[ "$1" == "${exclude}" ]]; then
       excluded=$(($excluded+1))
       return 1
     fi
@@ -64,8 +60,7 @@ make_filter() {
     -* ) excluding=1;;
     +* ) excluding=0;;
     *  )
-      if [ ${excluding} == 1 ]
-      then
+      if [ ${excluding} == 1 ]; then
         excludes+=("$1")
       else
         return 0
@@ -81,17 +76,12 @@ out() {
 
 out_file=${1%.*}.m3u8
 rm -f ${out_file}
-while read dir
-do
-  if [ -n "${dir}" ] && make_filter "${dir}"
-  then
-    if [ -d "${dir}" ]
-    then
-      for file in `ls -1 "${dir}"`
-      do
+while read dir; do
+  if [ -n "${dir}" ] && make_filter "${dir}"; then
+    if [ -d "${dir}" ]; then
+      for file in `ls -1 "${dir}"`; do
         path=${dir}/${file}
-        if type_filter "${file}" && file_filter "${path}"
-        then
+        if type_filter "${file}" && file_filter "${path}"; then
           out ${path}
         fi
       done
