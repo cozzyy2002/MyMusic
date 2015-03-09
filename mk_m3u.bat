@@ -1,7 +1,11 @@
 #/bin/bash
 
 # Script to make m3u play list
-#
+
+if [ -z "$1" ]; then
+  echo Usage: $0 list_file
+  exit 1
+fi
 # Usage mk_m3u list_file
 #
 # Makes m3u file contains file names in the directory specified in list_file.
