@@ -6,13 +6,19 @@ if [ -z "$1" ]; then
   echo Usage: $0 list_file
   exit 1
 fi
-# Usage mk_m3u list_file
-#
+
 # Makes m3u file contains file names in the directory specified in list_file.
 # If a file name is specified instead of directory,
 # the file name is output to m3u file.
 #
 # About "-" and "+" in list_file, see Excluding status below
+
+# output file name is same as list_file
+# expect for the extension which is .m3u8
+out_file=${1%.*}.m3u8
+
+# output file is over-written
+rm -f ${out_file}
 
 # Only file that has following extension are recognized as a music file.
 types=("wma" "mp3")
@@ -78,8 +84,6 @@ out() {
   included=$(($included+1))
 }
 
-out_file=${1%.*}.m3u8
-rm -f ${out_file}
 while read line; do
   if [ -n "${line}" ] && make_filter "${line}"; then
     if [ -d "${line}" ]; then
