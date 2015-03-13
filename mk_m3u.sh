@@ -99,6 +99,6 @@ while read line; do
   fi
 done < $1
 
-# shows summay and output file information
+# shows summary and output file information
 echo "out $included line(s), excluded $excluded line(s)"
 ls -l ${out_file}
