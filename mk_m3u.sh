@@ -14,14 +14,16 @@ fi
 # About "-" and "+" in list_file, see Excluding status below
 
 # output file name is same as list_file
-# expect for the extension which is .m3u8
+# except for the extension which is .m3u8
 out_file=${1%.*}.m3u8
 
 # output file is over-written
 rm -f ${out_file}
 
-# Only file that has following extension are recognized as a music file.
-types=("wma" "mp3")
+# File that has one of following extensions are recognized as a music file.
+# Followings are supported by Poweramp for Android
+# see https://play.google.com/store/apps/details?id=com.maxmpz.audioplayer
+types=(mp3 mp4 m4a ogg wma* flac wav ape wv tta mpc aiff)
 
 IFS=$'\n'
 
