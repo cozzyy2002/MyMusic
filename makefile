@@ -12,7 +12,12 @@ script_file = mk_m3u.sh
 cd := $(shell basename `pwd`)
 
 #default target
-all: $(play_lists)
+all.$(play_list_type): $(play_lists)
+	rm -f $@
+	cat IdleCollection.$(play_list_type) >> $@
+	cat Oldies.$(play_list_type)         >> $@
+	cat Rock.$(play_list_type)           >> $@
+	cat Fusion.$(play_list_type)         >> $@
 
 $(play_lists) : $(script_file)
 
