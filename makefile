@@ -3,7 +3,7 @@
 list_file_type = list
 play_list_type = m3u8
 
-list_files = $(wildcard *.$(list_file_type))
+list_files = $(shell ls *.$(list_file_type))
 play_lists = $(patsubst %.$(list_file_type),%.$(play_list_type),$(list_files))
 script_file = mk_m3u.sh
 
@@ -14,10 +14,7 @@ cd := $(shell basename `pwd`)
 #default target
 all.$(play_list_type): $(play_lists)
 	rm -f $@
-	cat IdolCollection.$(play_list_type) >> $@
-	cat Oldies.$(play_list_type)         >> $@
-	cat Rock.$(play_list_type)           >> $@
-	cat Fusion.$(play_list_type)         >> $@
+	cat $^ >> $@
 
 $(play_lists) : $(script_file)
 
