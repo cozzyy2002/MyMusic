@@ -13,8 +13,7 @@ cd := $(shell basename `pwd`)
 
 #default target
 all.$(play_list_type): $(play_lists)
-	rm -f $@
-	cat $^ >> $@
+	cat $^ > $@
 
 $(play_lists) : $(script_file)
 
