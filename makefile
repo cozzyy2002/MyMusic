@@ -18,7 +18,7 @@ all.$(play_list_type): $(play_lists)
 $(play_lists) : $(script_file)
 
 %.$(play_list_type): %.$(list_file_type)
-	cd ..; $(cd)/$(script_file) $(cd)/$<
+	cd ..; $(cd)/$(script_file) $(cd)/$<; cp $(cd)/$@ ./$(basename $@).m3u
 
 .PHONY: clean
 clean:
